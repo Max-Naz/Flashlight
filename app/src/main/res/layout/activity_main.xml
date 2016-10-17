@@ -24,5 +24,4 @@
         android:text="@string/checkbox"
         android:textColor="@color/textLight" />
 
-
 </RelativeLayout>

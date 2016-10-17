@@ -14,10 +14,8 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -33,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private Switch aSwitch;
     private CheckBox cbFon;
     private SharedPreferences sharedPref;
-    private ImageButton btnExitApp;
 
     //CONSTANTS
     private final String CHECK_BOX_STATE = "savedCheckBoxState";
@@ -83,15 +80,6 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                 }
             }
         });
-
-        btnExitApp = (ImageButton) findViewById(R.id.btnExit);
-        btnExitApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
 
         Log.d(TAG, "onCreate End");
     }
