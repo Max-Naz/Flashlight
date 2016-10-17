@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Фонарик</string>
+    <string name="error_text">Вспышка камеры недоступна!</string>
+    <string name="error_title">Ошибка! Нет вспышки!</string>
+    <string name="exit_text">Выход</string>
+    <string name="item_settings">Настройки</string>
+    <string name="checkbox">Не выключать при работе в фоне</string>
+    <string name="checkBoxToast">В этом режиме камера будет недоступна.</string>
+</resources>
