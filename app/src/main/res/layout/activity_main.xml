@@ -8,20 +8,33 @@
     android:background="@drawable/background"
     tools:context="max_naz.flashlightapp.MainActivity">
 
-    <Switch
-        android:id="@+id/switsh_on_off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
     <CheckBox
         android:id="@+id/check_box_fon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/switsh_on_off"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/checkbox"
         android:textColor="@color/textLight" />
 
+    <ImageButton
+        android:id="@+id/btn_on_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="15dp"
+        android:contentDescription="@string/on_off_button"
+        android:padding="40dp"
+        app:srcCompat="@drawable/ic_power_settings_new_black_36px"
+        tools:ignore="ContentDescription,VectorDrawableCompat" />
+
+    <ImageButton
+        android:id="@+id/btn_exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_on_off"
+        android:layout_centerHorizontal="true"
+        android:padding="20dp"
+        app:srcCompat="@drawable/ic_exit_to_app_black_36px"
+        tools:ignore="ContentDescription,VectorDrawableCompat" />
 </RelativeLayout>

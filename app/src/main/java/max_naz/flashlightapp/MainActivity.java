@@ -14,8 +14,11 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private Switch aSwitch;
     private CheckBox cbFon;
     private SharedPreferences sharedPref;
+    private ImageButton btnOnOff, btnExit;
+    boolean isPressed = false;
+    RelativeLayout backgroundMain;
 
     //CONSTANTS
     private final String CHECK_BOX_STATE = "savedCheckBoxState";
@@ -46,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
         Log.d(TAG, "onCreate Start");
 
+        backgroundMain = (RelativeLayout) findViewById(R.id.activity_main);
         checkCameraFlash();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -57,19 +64,35 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         soundPool.setOnLoadCompleteListener(this);
         sound = soundPool.load(this, R.raw.click, 1);
 
-        aSwitch = (Switch) findViewById(R.id.switsh_on_off);
-        aSwitch.setChecked(true);
-        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        //Buttons
+        btnOnOff = (ImageButton) findViewById(R.id.btn_on_off);
+        btnExit = (ImageButton) findViewById(R.id.btn_exit);
+
+        View.OnClickListener btnOnclickListener = new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    setFlashLightOn();
-                } else {
-                    setFlashLightOff();
+            public void onClick(View view) {
+                switch (view.getId()){
+                    case R.id.btn_on_off:
+                        if (!isPressed) {
+                            setFlashLightOff();
+                            isPressed = true;
+                        }else {
+                            setFlashLightOn();
+                            isPressed = false;
+                        }
+                        break;
+                    case R.id.btn_exit:
+                        soundPool.play(sound, 1, 1, 0, 0, 1);
+                        finish();
+                        break;
                 }
             }
-        });
+        };
 
+        btnOnOff.setOnClickListener(btnOnclickListener);
+        btnExit.setOnClickListener(btnOnclickListener);
+
+        //Check Box
         cbFon = (CheckBox) findViewById(R.id.check_box_fon);
         loadCheckBoxState();
         cbFon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -145,18 +168,6 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             soundPool.setOnLoadCompleteListener(this);
             sound = soundPool.load(this, R.raw.click, 1);
 
-            aSwitch = (Switch) findViewById(R.id.switsh_on_off);
-            aSwitch.setChecked(true);
-            aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if (b) {
-                        setFlashLightOn();
-                    } else {
-                        setFlashLightOff();
-                    }
-                }
-            });
 
             cbFon = (CheckBox) findViewById(R.id.check_box_fon);
             loadCheckBoxState();
@@ -288,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Turn ON Camera flash on the phone (without sound)
     private void setFlashLightOnWithoutSound() {
         Log.d(TAG, "setFlashLightOnWithoutSound()");
+        backgroundMain.setBackground(getResources().getDrawable(R.drawable.background_on));
         try {
             new Thread(new Runnable() {
                 @Override
@@ -324,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Turn OFF Camera flash on the phone
     private void setFlashLightOff() {
         Log.d(TAG, "setFlashLightOff()");
+        backgroundMain.setBackground(getResources().getDrawable(R.drawable.background_off));
         try {
             soundPool.play(sound, 1, 1, 0, 0, 1);
             new Thread(new Runnable() {

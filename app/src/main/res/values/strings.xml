@@ -6,4 +6,5 @@
     <string name="item_settings">Настройки</string>
     <string name="checkbox">Не выключать при работе в фоне</string>
     <string name="checkBoxToast">В этом режиме камера будет недоступна.</string>
+    <string name="on_off_button">On-Off button</string>
 </resources>
