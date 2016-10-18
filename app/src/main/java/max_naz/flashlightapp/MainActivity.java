@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private Switch aSwitch;
     private CheckBox cbFon;
     private SharedPreferences sharedPref;
-    private ImageButton btnOnOff, btnExit;
+    private ImageButton btnOnOff, btnExit, btnSettings;
     boolean isPressed = false;
     RelativeLayout backgroundMain;
 
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         //Buttons
         btnOnOff = (ImageButton) findViewById(R.id.btn_on_off);
         btnExit = (ImageButton) findViewById(R.id.btn_exit);
+        btnSettings = (ImageButton) findViewById(R.id.btn_settings);
 
         View.OnClickListener btnOnclickListener = new View.OnClickListener() {
             @Override
@@ -85,12 +86,17 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                         soundPool.play(sound, 1, 1, 0, 0, 1);
                         finish();
                         break;
+                    case R.id.btnSettings:
+                        soundPool.play(sound, 1, 1, 0, 0, 1);
+
+                        break;
                 }
             }
         };
 
         btnOnOff.setOnClickListener(btnOnclickListener);
         btnExit.setOnClickListener(btnOnclickListener);
+        btnSettings.setOnClickListener(btnOnclickListener);
 
         //Check Box
         cbFon = (CheckBox) findViewById(R.id.check_box_fon);
@@ -336,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Turn OFF Camera flash on the phone
     private void setFlashLightOff() {
         Log.d(TAG, "setFlashLightOff()");
-        backgroundMain.setBackground(getResources().getDrawable(R.drawable.background_off));
+        backgroundMain.setBackground(getResources().getDrawable(R.drawable.background));
         try {
             soundPool.play(sound, 1, 1, 0, 0, 1);
             new Thread(new Runnable() {
