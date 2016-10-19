@@ -22,9 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="@string/on_off_button"
-        android:padding="40dp"
+        android:padding="55dp"
         app:srcCompat="@drawable/ic_power_settings_new_black_36px"
         tools:ignore="ContentDescription,VectorDrawableCompat" />
 
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_on_off"
         android:layout_centerHorizontal="true"
-        android:padding="20dp"
+        android:padding="34dp"
         app:srcCompat="@drawable/ic_exit_to_app_black_36px"
         tools:ignore="ContentDescription,VectorDrawableCompat" />
 
@@ -43,13 +43,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="RtlHardcoded">
 
         <ImageButton
             android:id="@+id/btn_sos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="13dp"
             app:srcCompat="@drawable/ic_sos_warning"
             tools:ignore="ContentDescription,VectorDrawableCompat" />
 
@@ -57,6 +59,7 @@
             android:id="@+id/btn_blink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="13dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_highlight_black_36px"
             tools:ignore="ContentDescription,VectorDrawableCompat" />
@@ -65,16 +68,18 @@
             android:id="@+id/btn_volume_off"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="13dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_volume_off_black_36px"
             tools:ignore="ContentDescription,VectorDrawableCompat" />
 
         <ImageButton
-            android:id="@+id/btn_settings"
+            android:id="@+id/btn_tune"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:padding="13dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_tune_black_36px"
             tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlHardcoded,VectorDrawableCompat" />
