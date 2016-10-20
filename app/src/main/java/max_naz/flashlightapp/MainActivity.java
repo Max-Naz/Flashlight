@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.AudioAttributes;
@@ -21,14 +20,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.Toast;
+
 
 import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadCompleteListener {
 
+    //Variables
     private int sound;
     private SoundPool soundPool;
     private Camera camera;
@@ -72,14 +72,16 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         //Buttons
         btnOnOff = (ImageButton) findViewById(R.id.btn_on_off);
         btnExit = (ImageButton) findViewById(R.id.btn_exit);
-        btnTune = (ImageButton) findViewById(R.id.btn_tune);
+        //btnTune = (ImageButton) findViewById(R.id.btn_tune);
         btnVolumeOff = (ImageButton) findViewById(R.id.btn_volume_off);
-        btnBlink = (ImageButton) findViewById(R.id.btn_blink);
-        btnSos = (ImageButton) findViewById(R.id.btn_sos);
+        //btnBlink = (ImageButton) findViewById(R.id.btn_blink);
+        //btnSos = (ImageButton) findViewById(R.id.btn_sos);
 
+        /*
         btnVolumeOff.setVisibility(View.GONE);
         btnBlink.setVisibility(View.GONE);
         btnSos.setVisibility(View.GONE);
+        */
 
         View.OnClickListener btnOnclickListener = new View.OnClickListener() {
             @Override
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                             setFlashLightOff();
                             isPressedBtnOnOff = true;
                         } else {
+                            soundPool.play(sound, 1, 1, 0, 0, 1);
                             setFlashLightOn();
                             isPressedBtnOnOff = false;
                         }
@@ -101,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                         finish();
                         break;
                     //Button Tune
-                    case R.id.btn_tune:
+                    /*case R.id.btn_tune:
                         soundPool.play(sound, 1, 1, 0, 0, 1);
                         if (!isPressedBtnTune) {
                             btnVolumeOff.setVisibility(View.VISIBLE);
@@ -115,32 +118,36 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                             isPressedBtnTune = false;
                         }
                         break;
+                        */
+
                     //Button Volume Off
                     case R.id.btn_volume_off:
                         soundPool.play(sound, 1, 1, 0, 0, 1);
                         if (isPressedBtnSoundOff) {
                             audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                            btnVolumeOff.setImageResource(R.drawable.ic_volume_off_on);
                             isPressedBtnSoundOff = false;
                         } else {
                             audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                            btnVolumeOff.setImageResource(R.drawable.ic_volume_off_off);
                             isPressedBtnSoundOff = true;
                         }
                         break;
                     //Button Blink
-                    case R.id.btn_blink:
-                        break;
+                    //case R.id.btn_blink:
+                        //break;
                 }
             }
         };
 
         btnOnOff.setOnClickListener(btnOnclickListener);
         btnExit.setOnClickListener(btnOnclickListener);
-        btnTune.setOnClickListener(btnOnclickListener);
+        //btnTune.setOnClickListener(btnOnclickListener);
         btnVolumeOff.setOnClickListener(btnOnclickListener);
-        btnBlink.setOnClickListener(btnOnclickListener);
-        btnSos.setOnClickListener(btnOnclickListener);
+        //btnBlink.setOnClickListener(btnOnclickListener);
+        //btnSos.setOnClickListener(btnOnclickListener);
 
         //Check Box
         cbFon = (CheckBox) findViewById(R.id.check_box_fon);
@@ -149,7 +156,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (cbFon.isChecked()) {
-                    Toast.makeText(MainActivity.this, "В даном режиме камера становится недоступна", Toast.LENGTH_SHORT).show();
+                    cbFon.setTextColor(getResources().getColor(R.color.textOn));
+                    Toast.makeText(MainActivity.this, "В даном режиме камера будет недоступна", Toast.LENGTH_SHORT).show();
+                }else {
+                    cbFon.setTextColor(getResources().getColor(R.color.textOff));
                 }
             }
         });
@@ -167,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             if (camera == null) {
                 cameraOpen();
             }
-            setFlashLightOnWithoutSound();
+            setFlashLightOn();
         } catch (Exception e) {
             Log.d(TAG, "Exception in onResume() " + e.getMessage());
             e.printStackTrace();
@@ -338,17 +348,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         }
     }
 
-    //Turn ON Camera flash on the phone (with sound)
-    private void setFlashLightOn() {
-        Log.d(TAG, "setFlashLightOn()");
-        soundPool.play(sound, 1, 1, 0, 0, 1);
-        setFlashLightOnWithoutSound();
-    }
-
     //Turn ON Camera flash on the phone (without sound)
-    private void setFlashLightOnWithoutSound() {
+    private void setFlashLightOn() {
         Log.d(TAG, "setFlashLightOnWithoutSound()");
-        backgroundMain.setBackground(getResources().getDrawable(R.drawable.background_on));
+        btnOnOff.setImageResource(R.drawable.ic_flashlight_on_90px);
         try {
             new Thread(new Runnable() {
                 @Override
@@ -385,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Turn OFF Camera flash on the phone
     private void setFlashLightOff() {
         Log.d(TAG, "setFlashLightOff()");
-        backgroundMain.setBackground(getResources().getDrawable(R.drawable.background_off));
+        btnOnOff.setImageResource(R.drawable.ic_flashlight_off_90px);
         try {
             soundPool.play(sound, 1, 1, 0, 0, 1);
             new Thread(new Runnable() {

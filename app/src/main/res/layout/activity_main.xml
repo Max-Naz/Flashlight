@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@color/background_main_activity"
     tools:context="max_naz.flashlightapp.MainActivity">
 
     <CheckBox
@@ -15,74 +15,38 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/checkbox"
-        android:textColor="@color/textLight" />
+        android:textColor="@color/textOff" />
 
     <ImageButton
         android:id="@+id/btn_on_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="8dp"
+        android:background="@null"
+        android:layout_marginBottom="5dp"
         android:contentDescription="@string/on_off_button"
-        android:padding="55dp"
-        app:srcCompat="@drawable/ic_power_settings_new_black_36px"
-        tools:ignore="ContentDescription,VectorDrawableCompat" />
+        app:srcCompat="@drawable/ic_flashlight_off_90px"
+        tools:ignore="ContentDescription,VectorDrawableCompat"/>
 
     <ImageButton
         android:id="@+id/btn_exit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn_on_off"
+        android:background="@null"
         android:layout_centerHorizontal="true"
-        android:padding="34dp"
-        app:srcCompat="@drawable/ic_exit_to_app_black_36px"
+        app:srcCompat="@drawable/ic_exit_to_app_off"
         tools:ignore="ContentDescription,VectorDrawableCompat" />
 
-    <LinearLayout
+    <ImageButton
+        android:id="@+id/btn_volume_off"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_volume_off_off"
+        tools:ignore="ContentDescription,VectorDrawableCompat"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:orientation="horizontal"
-        tools:ignore="RtlHardcoded">
+        android:layout_marginBottom="13dp"
+        android:layout_centerHorizontal="true" />
 
-        <ImageButton
-            android:id="@+id/btn_sos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="13dp"
-            app:srcCompat="@drawable/ic_sos_warning"
-            tools:ignore="ContentDescription,VectorDrawableCompat" />
-
-        <ImageButton
-            android:id="@+id/btn_blink"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="13dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_highlight_black_36px"
-            tools:ignore="ContentDescription,VectorDrawableCompat" />
-
-        <ImageButton
-            android:id="@+id/btn_volume_off"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="13dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_volume_off_black_36px"
-            tools:ignore="ContentDescription,VectorDrawableCompat" />
-
-        <ImageButton
-            android:id="@+id/btn_tune"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:padding="13dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_tune_black_36px"
-            tools:ignore="ContentDescription,ObsoleteLayoutParam,RtlHardcoded,VectorDrawableCompat" />
-
-    </LinearLayout>
 </RelativeLayout>
