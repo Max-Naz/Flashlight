@@ -19,14 +19,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadCompleteListener {
+public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadCompleteListener, View.OnClickListener {
 
     //Variables
     private int sound;
@@ -37,10 +36,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private SharedPreferences sharedPref;
     private ImageButton btnOnOff, btnExit, btnTune, btnVolumeOff, btnBlink, btnSos;
     private boolean isPressedBtnOnOff = false;
-    private boolean isPressedBtnTune = false;
     private boolean isPressedBtnSoundOff = true;
-    private boolean isPressedBtnBlink = false;
-    private RelativeLayout backgroundMain;
     private AudioManager audioManager;
 
     //CONSTANTS
@@ -55,101 +51,28 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG, "onCreate Start");
-
-        backgroundMain = (RelativeLayout) findViewById(R.id.activity_main);
+        Log.d(TAG, "onCreate() Start");
         checkCameraFlash();
 
+        //Work with buttons
+        btnOnOff = (ImageButton) findViewById(R.id.btn_on_off);
+        btnExit = (ImageButton) findViewById(R.id.btn_exit);
+        btnVolumeOff = (ImageButton) findViewById(R.id.btn_volume_off);
+
+        btnOnOff.setOnClickListener(this);
+        btnExit.setOnClickListener(this);
+        btnVolumeOff.setOnClickListener(this);
+
+        //Work with sound for buttons
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             createSoundPoolWithBuilder();
         } else {
             createSoundPoolWithConstructor();
         }
-
         soundPool.setOnLoadCompleteListener(this);
         sound = soundPool.load(this, R.raw.click, 1);
 
-        //Buttons
-        btnOnOff = (ImageButton) findViewById(R.id.btn_on_off);
-        btnExit = (ImageButton) findViewById(R.id.btn_exit);
-        //btnTune = (ImageButton) findViewById(R.id.btn_tune);
-        btnVolumeOff = (ImageButton) findViewById(R.id.btn_volume_off);
-        //btnBlink = (ImageButton) findViewById(R.id.btn_blink);
-        //btnSos = (ImageButton) findViewById(R.id.btn_sos);
-
-        /*
-        btnVolumeOff.setVisibility(View.GONE);
-        btnBlink.setVisibility(View.GONE);
-        btnSos.setVisibility(View.GONE);
-        */
-
-        View.OnClickListener btnOnclickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    //Button On/Off
-                    case R.id.btn_on_off:
-                        if (!isPressedBtnOnOff) {
-                            setFlashLightOff();
-                            isPressedBtnOnOff = true;
-                        } else {
-                            soundPool.play(sound, 1, 1, 0, 0, 1);
-                            setFlashLightOn();
-                            isPressedBtnOnOff = false;
-                        }
-                        break;
-                    //Button Exit App
-                    case R.id.btn_exit:
-                        soundPool.play(sound, 1, 1, 0, 0, 1);
-                        finish();
-                        break;
-                    //Button Tune
-                    /*case R.id.btn_tune:
-                        soundPool.play(sound, 1, 1, 0, 0, 1);
-                        if (!isPressedBtnTune) {
-                            btnVolumeOff.setVisibility(View.VISIBLE);
-                            btnBlink.setVisibility(View.VISIBLE);
-                            btnSos.setVisibility(View.VISIBLE);
-                            isPressedBtnTune = true;
-                        } else {
-                            btnVolumeOff.setVisibility(View.GONE);
-                            btnBlink.setVisibility(View.GONE);
-                            btnSos.setVisibility(View.GONE);
-                            isPressedBtnTune = false;
-                        }
-                        break;
-                        */
-
-                    //Button Volume Off
-                    case R.id.btn_volume_off:
-                        soundPool.play(sound, 1, 1, 0, 0, 1);
-                        if (isPressedBtnSoundOff) {
-                            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
-                            btnVolumeOff.setImageResource(R.drawable.ic_volume_off_on);
-                            isPressedBtnSoundOff = false;
-                        } else {
-                            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
-                            btnVolumeOff.setImageResource(R.drawable.ic_volume_off_off);
-                            isPressedBtnSoundOff = true;
-                        }
-                        break;
-                    //Button Blink
-                    //case R.id.btn_blink:
-                        //break;
-                }
-            }
-        };
-
-        btnOnOff.setOnClickListener(btnOnclickListener);
-        btnExit.setOnClickListener(btnOnclickListener);
-        //btnTune.setOnClickListener(btnOnclickListener);
-        btnVolumeOff.setOnClickListener(btnOnclickListener);
-        //btnBlink.setOnClickListener(btnOnclickListener);
-        //btnSos.setOnClickListener(btnOnclickListener);
-
-        //Check Box
+        //Work with check box
         cbFon = (CheckBox) findViewById(R.id.check_box_fon);
         loadCheckBoxState();
         cbFon.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -164,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             }
         });
 
-        Log.d(TAG, "onCreate End");
+        Log.d(TAG, "onCreate() End");
     }
 
     //ON RESUME
@@ -249,6 +172,45 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     }
 
     //------------------------------------------METHODS------------------------------------------//
+
+    //OnClick for buttons
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            //Button On/Off
+            case R.id.btn_on_off:
+                if (!isPressedBtnOnOff) {
+                    setFlashLightOff();
+                    isPressedBtnOnOff = true;
+                } else {
+                    soundPool.play(sound, 1, 1, 0, 0, 1);
+                    setFlashLightOn();
+                    isPressedBtnOnOff = false;
+                }
+                break;
+            //Button Exit App
+            case R.id.btn_exit:
+                soundPool.play(sound, 1, 1, 0, 0, 1);
+                btnExit.setImageResource(R.drawable.ic_exit_to_app_on);
+                finish();
+                break;
+            //Button Volume Off
+            case R.id.btn_volume_off:
+                soundPool.play(sound, 1, 1, 0, 0, 1);
+                if (isPressedBtnSoundOff) {
+                    audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                    btnVolumeOff.setImageResource(R.drawable.ic_volume_off_on);
+                    isPressedBtnSoundOff = false;
+                } else {
+                    audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                    btnVolumeOff.setImageResource(R.drawable.ic_volume_off_off);
+                    isPressedBtnSoundOff = true;
+                }
+                break;
+        }
+    }
 
     //Checks Camera Flash on phone and show the alert message if phone have no camera flash
     private void checkCameraFlash() {

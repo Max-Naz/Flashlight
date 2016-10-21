@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@null"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="13dp"
         android:contentDescription="@string/on_off_button"
         app:srcCompat="@drawable/ic_flashlight_off_90px"
         tools:ignore="ContentDescription,VectorDrawableCompat"/>
