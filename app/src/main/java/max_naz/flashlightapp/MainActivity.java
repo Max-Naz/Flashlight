@@ -12,6 +12,7 @@ import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,13 +23,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadCompleteListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadCompleteListener,
+        View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     //Variables
     private int sound;
@@ -41,10 +42,12 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private boolean isPressedBtnOnOff;
     private boolean isPressedSettings = false;
     private boolean isPressedBtnFrontLed = false;
-    private AudioManager audioManager;
+    //private AudioManager audioManager;
     private WindowManager.LayoutParams params;
     private RelativeLayout backgroundMain;
     private int brightness = 128;
+    //private PowerManager mPowerManager;
+    //private PowerManager.WakeLock mWakeLock;
 
     //CONSTANTS
     private final String CHECK_BOX_STATE_FON = "savedCheckBoxStateFon";
@@ -104,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
         //Check Box Sound
         if (cbSound.isChecked()) {
-            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+            //*audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
             cbSound.setTextColor(getResources().getColor(R.color.textOn));
         }
 
@@ -113,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         if (cbStart.isChecked()) {
             cbStart.setTextColor(getResources().getColor(R.color.textOn));
         }
+
+        cbFon.setVisibility(View.GONE);
+        cbStart.setVisibility(View.GONE);
+        cbSound.setVisibility(View.GONE);
 
         Log.d(TAG, "onCreate() End");
     }
@@ -139,16 +146,6 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             Log.d(TAG, "Exception in onResume() " + e.getMessage());
             e.printStackTrace();
         }
-
-        if (isPressedSettings) {
-            cbFon.setVisibility(View.VISIBLE);
-            cbStart.setVisibility(View.VISIBLE);
-            cbSound.setVisibility(View.VISIBLE);
-        } else {
-            cbFon.setVisibility(View.GONE);
-            cbStart.setVisibility(View.GONE);
-            cbSound.setVisibility(View.GONE);
-        }
     }
 
     //ON PAUSE
@@ -172,6 +169,12 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             releaseCameraAndPreview();
         }
         saveCheckBoxState();
+
+        if (isPressedBtnFrontLed) {
+            setFrontLedLightOff();
+            btnFrontLed.setImageResource(R.drawable.ic_front_led_off_34px);
+            isPressedBtnFrontLed = false;
+        }
     }
 
     //ON RESTART
@@ -185,51 +188,64 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             releaseCameraAndPreview();
             cameraOpen();
 
+            params = getWindow().getAttributes();
+            backgroundMain = (RelativeLayout) findViewById(R.id.activity_main);
+
+            //Work with buttons
+            btnSettings = (ImageButton) findViewById(R.id.btn_settings);
+            btnOnOff = (ImageButton) findViewById(R.id.btn_on_off);
+            btnExit = (ImageButton) findViewById(R.id.btn_exit);
+            btnFrontLed = (ImageButton) findViewById(R.id.btn_front_led);
+
+            btnSettings.setOnClickListener(this);
+            btnOnOff.setOnClickListener(this);
+            btnExit.setOnClickListener(this);
+            btnFrontLed.setOnClickListener(this);
+
+            //Work with sound for buttons
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 createSoundPoolWithBuilder();
             } else {
                 createSoundPoolWithConstructor();
             }
-
             soundPool.setOnLoadCompleteListener(this);
             sound = soundPool.load(this, R.raw.click, 1);
 
-            //Check Boxes
+            //Work with check box
             cbFon = (CheckBox) findViewById(R.id.check_box_fon);
             cbStart = (CheckBox) findViewById(R.id.check_box_start);
             cbSound = (CheckBox) findViewById(R.id.check_box_sound);
+
+            cbFon.setOnCheckedChangeListener(this);
+            cbStart.setOnCheckedChangeListener(this);
+            cbSound.setOnCheckedChangeListener(this);
 
             loadCheckBoxState();
 
             //Check Box Fon
             if (cbFon.isChecked()) {
                 cbFon.setTextColor(getResources().getColor(R.color.textOn));
-            } else {
-                cbFon.setTextColor(getResources().getColor(R.color.textOff));
+            }
+
+            //Check Box Sound
+            if (cbSound.isChecked()) {
+                //audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                cbSound.setTextColor(getResources().getColor(R.color.textOn));
             }
 
             //Check Box Start
             if (cbStart.isChecked()) {
                 cbStart.setTextColor(getResources().getColor(R.color.textOn));
-            } else {
-                cbStart.setTextColor(getResources().getColor(R.color.textOff));
             }
 
-            //Check Box Start
-            if (cbSound.isChecked()) {
-                cbSound.setTextColor(getResources().getColor(R.color.textOn));
-            } else {
-                cbSound.setTextColor(getResources().getColor(R.color.textOff));
-            }
+            cbFon.setVisibility(View.GONE);
+            cbStart.setVisibility(View.GONE);
+            cbSound.setVisibility(View.GONE);
 
-            if (isPressedSettings) {
-                cbFon.setVisibility(View.VISIBLE);
-                cbStart.setVisibility(View.VISIBLE);
-                cbSound.setVisibility(View.VISIBLE);
-            } else {
-                cbFon.setVisibility(View.GONE);
-                cbStart.setVisibility(View.GONE);
-                cbSound.setVisibility(View.GONE);
+            if (isPressedBtnFrontLed) {
+                setFrontLedLightOff();
+                isPressedBtnOnOff = false;
             }
 
             Log.d(TAG, "onRestart() End");
@@ -258,7 +274,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
             //Settings button
             case R.id.btn_settings:
-                soundPool.play(sound, 1, 1, 0, 0, 1);
+                if (!cbSound.isChecked()) {
+                    soundPool.play(sound, 1, 1, 0, 0, 1);
+                }
+
                 if (isPressedSettings) {
                     cbFon.setVisibility(View.GONE);
                     cbStart.setVisibility(View.GONE);
@@ -277,7 +296,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             //Button On/Off
             case R.id.btn_on_off:
                 if (isPressedBtnOnOff) {
-                    soundPool.play(sound, 1, 1, 0, 0, 1);
+                    if (!cbSound.isChecked()) {
+                        soundPool.play(sound, 1, 1, 0, 0, 1);
+                    }
+
                     if (isPressedBtnFrontLed) {
                         setFrontLedLightOff();
                         isPressedBtnOnOff = false;
@@ -286,7 +308,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                         isPressedBtnOnOff = false;
                     }
                 } else {
-                    soundPool.play(sound, 1, 1, 0, 0, 1);
+                    if (!cbSound.isChecked()) {
+                        soundPool.play(sound, 1, 1, 0, 0, 1);
+                    }
+
                     if (isPressedBtnFrontLed) {
                         setFrontLedLightOn();
                         isPressedBtnOnOff = true;
@@ -299,7 +324,10 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
             //Button Front Led
             case R.id.btn_front_led:
-                soundPool.play(sound, 1, 1, 0, 0, 1);
+                if (!cbSound.isChecked()) {
+                    soundPool.play(sound, 1, 1, 0, 0, 1);
+                }
+
                 if (isPressedBtnFrontLed) {
                     btnFrontLed.setImageResource(R.drawable.ic_front_led_off_34px);
                     isPressedBtnFrontLed = false;
@@ -313,7 +341,9 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
             //Button Exit App
             case R.id.btn_exit:
-                soundPool.play(sound, 1, 1, 0, 0, 1);
+                if (!cbSound.isChecked()) {
+                    soundPool.play(sound, 1, 1, 0, 0, 1);
+                }
                 btnExit.setImageResource(R.drawable.ic_exit_to_app_on);
                 finish();
                 break;
@@ -331,8 +361,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         //Set Max Brightness
         android.provider.Settings.System.putInt(getContentResolver(),
                 android.provider.Settings.System.SCREEN_BRIGHTNESS, 255);
-        //params.screenBrightness = 1;
         getWindow().setAttributes(params);
+
         //Set Elements Screen Invisible and Set Background White. Set Img for Btn On/Off
         btnFrontLed.setVisibility(View.GONE);
         btnExit.setVisibility(View.GONE);
@@ -568,12 +598,12 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             //Check Box Sound
             case R.id.check_box_sound:
                 if (cbSound.isChecked()) {
-                    audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                    //audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                     cbSound.setTextColor(getResources().getColor(R.color.textOn));
                 } else {
-                    audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                    //audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                     cbSound.setTextColor(getResources().getColor(R.color.textOff));
                 }
                 break;
