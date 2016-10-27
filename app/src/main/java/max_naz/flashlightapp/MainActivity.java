@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private WindowManager.LayoutParams params;
     private RelativeLayout backgroundMain;
     private int brightness = 128;
-    //private PowerManager mPowerManager;
-    //private PowerManager.WakeLock mWakeLock;
+    private PowerManager mPowerManager;
+    private PowerManager.WakeLock mWakeLock;
 
     //CONSTANTS
     private final String CHECK_BOX_STATE_FON = "savedCheckBoxStateFon";
@@ -63,11 +63,25 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "onCreate() Start");
+        checkCameraFlash();
+
         params = getWindow().getAttributes();
         backgroundMain = (RelativeLayout) findViewById(R.id.activity_main);
 
-        Log.d(TAG, "onCreate() Start");
-        checkCameraFlash();
+        mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = mPowerManager.newWakeLock(
+                /*PowerManager.SCREEN_DIM_WAKE_LOCK*/
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "DoNotTurnOffTheScreen");
+
+        //Work with sound for buttons
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            createSoundPoolWithBuilder();
+        } else {
+            createSoundPoolWithConstructor();
+        }
+        soundPool.setOnLoadCompleteListener(this);
+        sound = soundPool.load(this, R.raw.click, 1);
 
         //Work with buttons
         btnSettings = (ImageButton) findViewById(R.id.btn_settings);
@@ -79,15 +93,6 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         btnOnOff.setOnClickListener(this);
         btnExit.setOnClickListener(this);
         btnFrontLed.setOnClickListener(this);
-
-        //Work with sound for buttons
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            createSoundPoolWithBuilder();
-        } else {
-            createSoundPoolWithConstructor();
-        }
-        soundPool.setOnLoadCompleteListener(this);
-        sound = soundPool.load(this, R.raw.click, 1);
 
         //Work with check box
         cbFon = (CheckBox) findViewById(R.id.check_box_fon);
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             cbStart.setTextColor(getResources().getColor(R.color.textOn));
         }
 
+        //Check Box Gone
         cbFon.setVisibility(View.GONE);
         cbStart.setVisibility(View.GONE);
         cbSound.setVisibility(View.GONE);
@@ -302,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
                     if (isPressedBtnFrontLed) {
                         setFrontLedLightOff();
+                        mWakeLock.release();
                         isPressedBtnOnOff = false;
                     } else {
                         setFlashLightOff();
@@ -314,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
                     if (isPressedBtnFrontLed) {
                         setFrontLedLightOn();
+                        mWakeLock.acquire();
                         isPressedBtnOnOff = true;
                     } else {
                         setFlashLightOn();
@@ -332,9 +340,11 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                     btnFrontLed.setImageResource(R.drawable.ic_front_led_off_34px);
                     isPressedBtnFrontLed = false;
                 } else {
-                    setFlashLightOff();
+                    if (isPressedBtnOnOff) {
+                        setFlashLightOff();
+                        isPressedBtnOnOff = false;
+                    }
                     btnFrontLed.setImageResource(R.drawable.ic_front_led_on_34px);
-                    isPressedBtnOnOff = false;
                     isPressedBtnFrontLed = true;
                 }
                 break;
