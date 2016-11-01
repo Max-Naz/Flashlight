@@ -19,11 +19,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 import java.io.IOException;
@@ -295,21 +298,30 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //OnClick for buttons
     @Override
     public void onClick(View v) {
+        Animation anim = null;
+
         switch (v.getId()) {
 
             //Settings button
             case R.id.btn_settings:
+
                 if (!cbSound.isChecked()) {
                     soundPool.play(soundSettings, 1, 1, 0, 0, 1);
                 }
 
                 if (isPressedSettings) {
+                    anim = AnimationUtils.loadAnimation(this, R.anim.settings_btn_rotate_back);
+                    btnSettings.startAnimation(anim);
+
                     cbFon.setVisibility(View.GONE);
                     cbStart.setVisibility(View.GONE);
                     cbSound.setVisibility(View.GONE);
                     btnSettings.setImageResource(R.drawable.ic_settings_off_55px);
                     isPressedSettings = false;
                 } else {
+                    anim = AnimationUtils.loadAnimation(this, R.anim.settings_btn_rotate);
+                    btnSettings.startAnimation(anim);
+
                     cbFon.setVisibility(View.VISIBLE);
                     cbStart.setVisibility(View.VISIBLE);
                     cbSound.setVisibility(View.VISIBLE);
@@ -619,6 +631,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             case R.id.check_box_fon:
                 if (cbFon.isChecked()) {
                     cbFon.setTextColor(getResources().getColor(R.color.textOn));
+                    Toast.makeText(this, "Фонарик будет работать при выключении экрана или открытии другого приложения", Toast.LENGTH_SHORT).show();
                 } else {
                     cbFon.setTextColor(getResources().getColor(R.color.textOff));
                 }
@@ -627,12 +640,9 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             //Check Box Sound
             case R.id.check_box_sound:
                 if (cbSound.isChecked()) {
-                    //audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                     cbSound.setTextColor(getResources().getColor(R.color.textOn));
+                    Toast.makeText(this, "Звук кнопок выключен", Toast.LENGTH_SHORT).show();
                 } else {
-                    //audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    //audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
                     cbSound.setTextColor(getResources().getColor(R.color.textOff));
                 }
                 break;
@@ -641,6 +651,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             case R.id.check_box_start:
                 if (cbStart.isChecked()) {
                     cbStart.setTextColor(getResources().getColor(R.color.textOn));
+                    Toast.makeText(this, "Фонарик будет включаться автоматически при старте приложения", Toast.LENGTH_SHORT).show();
                 } else {
                     cbStart.setTextColor(getResources().getColor(R.color.textOff));
                 }
