@@ -3,11 +3,8 @@
     <string name="error_text">Вспышка камеры недоступна!</string>
     <string name="error_title">Ошибка! Нет вспышки!</string>
     <string name="exit_text">Выход</string>
-    <string name="item_settings">Настройки</string>
     <string name="checkbox_fon">Работать в фоне</string>
     <string name="checkbox_start">Включать при старте</string>
     <string name="checkbox_sound">Отключить звук</string>
-    <string name="checkBoxToast">В этом режиме камера будет недоступна.</string>
     <string name="on_off_button">On-Off button</string>
-    <string name="timer_text">00:00</string>
 </resources>

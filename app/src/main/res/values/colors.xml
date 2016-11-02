@@ -3,9 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
     <color name="textOn">#F7F7F7</color>
     <color name="textOff">#B7B7B7</color>
     <color name="background_main_activity">#00103A</color>
     <color name="white_background">#ffffff</color>
-    <color name="black_background">#28000000</color>
+    <color name="background_for_checkboxes">#28000000</color>
 </resources>

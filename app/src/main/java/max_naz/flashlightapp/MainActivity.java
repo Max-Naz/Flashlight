@@ -26,8 +26,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -45,21 +43,21 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     private SoundPool soundPool;
     private Camera camera;
     private Camera.Parameters parameters;
-    private CheckBox cbFon, cbStart, cbSound;
-    private SharedPreferences sharedPref;
-    private ImageButton btnSettings, btnOnOff, btnExit, btnFrontLed;
-    private boolean isPressedBtnOnOff;
-    private boolean isPressedSettings = false;
-    private boolean isPressedBtnFrontLed = false;
-    //private AudioManager audioManager;
     private WindowManager.LayoutParams params;
-    private RelativeLayout backgroundMain;
-    private LinearLayout backgroundSettings;
     private int brightness = 128;
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
+    private boolean isPressedBtnOnOff;
+    private boolean isPressedSettings = false;
+    private boolean isPressedBtnFrontLed = false;
+    private CheckBox cbFon, cbStart, cbSound;
+    private SharedPreferences sharedPref;
+    private ImageButton btnSettings, btnOnOff, btnExit, btnFrontLed;
+    private RelativeLayout backgroundMain;
+    private LinearLayout backgroundSettings;
 
-    //CONSTANTS
+
+    //Constants
     private final String CHECK_BOX_STATE_FON = "savedCheckBoxStateFon";
     private final String CHECK_BOX_STATE_START = "savedCheckBoxStateStart";
     private final String CHECK_BOX_STATE_SOUND = "savedCheckBoxStateSound";
@@ -73,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d(TAG, "onCreate() Start");
+        Log.d(TAG, "onCreate() start");
+
         checkCameraFlash();
 
         params = getWindow().getAttributes();
@@ -81,9 +80,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         backgroundSettings = (LinearLayout) findViewById(R.id.linear_settings);
 
         mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = mPowerManager.newWakeLock(
-                /*PowerManager.SCREEN_DIM_WAKE_LOCK*/
-                PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "DoNotTurnOffTheScreen");
+        mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                PowerManager.ACQUIRE_CAUSES_WAKEUP, "DoNotTurnOffTheScreen");
 
         //Work with sound for buttons
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         cbStart.setVisibility(View.GONE);
         cbSound.setVisibility(View.GONE);
 
-        Log.d(TAG, "onCreate() End");
+        Log.d(TAG, "onCreate() end");
     }
 
     //ON RESUME
@@ -151,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onResume();
 
         Log.d(TAG, "onResume()");
+
         try {
             if (camera == null) {
                 cameraOpen();
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                 setFlashLightOn();
                 isPressedBtnOnOff = true;
             } else {
-                btnOnOff.setImageResource(R.drawable.ic_flashlight_off_90px);
+                btnOnOff.setImageResource(R.drawable.ic_flashlight_off_123px);
                 isPressedBtnOnOff = false;
             }
 
@@ -175,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onPause();
 
         Log.d(TAG, "onPause()");
+
         if (!cbFon.isChecked()) {
             releaseCameraAndPreview();
         }
@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onStop();
 
         Log.d(TAG, "onStop()");
+
         if (!cbFon.isChecked()) {
             releaseCameraAndPreview();
         }
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
         if (isPressedBtnFrontLed) {
             setFrontLedLightOff();
-            btnFrontLed.setImageResource(R.drawable.ic_front_led_off_34px);
+            btnFrontLed.setImageResource(R.drawable.ic_front_led_off_55px);
             isPressedBtnFrontLed = false;
         }
     }
@@ -203,12 +204,11 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     protected void onRestart() {
         super.onRestart();
 
-        Log.d(TAG, "onRestart() Start");
+        Log.d(TAG, "onRestart() start");
 
         try {
             releaseCameraAndPreview();
             cameraOpen();
-            Log.d(TAG, "onRestart() End");
         } catch (Exception e) {
             Log.d(TAG, "Exception in onRestart() " + e.getMessage());
             e.printStackTrace();
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         backgroundMain = (RelativeLayout) findViewById(R.id.activity_main);
         backgroundSettings = (LinearLayout) findViewById(R.id.linear_settings);
 
-        btnSettings.setImageResource(R.drawable.ic_settings_off_55px);
+        btnSettings.setImageResource(R.drawable.ic_settings_off_34px);
         isPressedSettings = false;
 
         //Work with buttons
@@ -281,6 +281,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             setFrontLedLightOff();
             isPressedBtnOnOff = false;
         }
+
+        Log.d(TAG, "onRestart() end");
     }
 
     //ON DESTROY
@@ -289,9 +291,11 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         super.onDestroy();
 
         Log.d(TAG, "onDestroy()");
+
         saveCheckBoxState();
         releaseCameraAndPreview();
     }
+
 
     //------------------------------------------METHODS------------------------------------------//
 
@@ -316,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                     cbFon.setVisibility(View.GONE);
                     cbStart.setVisibility(View.GONE);
                     cbSound.setVisibility(View.GONE);
-                    btnSettings.setImageResource(R.drawable.ic_settings_off_55px);
+                    btnSettings.setImageResource(R.drawable.ic_settings_off_34px);
                     isPressedSettings = false;
                 } else {
                     anim = AnimationUtils.loadAnimation(this, R.anim.settings_btn_rotate);
@@ -325,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                     cbFon.setVisibility(View.VISIBLE);
                     cbStart.setVisibility(View.VISIBLE);
                     cbSound.setVisibility(View.VISIBLE);
-                    btnSettings.setImageResource(R.drawable.ic_settings_on_55px);
+                    btnSettings.setImageResource(R.drawable.ic_settings_on_34px);
                     isPressedSettings = true;
                 }
                 break;
@@ -364,14 +368,14 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
                 }
 
                 if (isPressedBtnFrontLed) {
-                    btnFrontLed.setImageResource(R.drawable.ic_front_led_off_34px);
+                    btnFrontLed.setImageResource(R.drawable.ic_front_led_off_55px);
                     isPressedBtnFrontLed = false;
                 } else {
                     if (isPressedBtnOnOff) {
                         setFlashLightOff();
                         isPressedBtnOnOff = false;
                     }
-                    btnFrontLed.setImageResource(R.drawable.ic_front_led_on_34px);
+                    btnFrontLed.setImageResource(R.drawable.ic_front_led_on_55px);
                     isPressedBtnFrontLed = true;
                 }
                 break;
@@ -388,12 +392,15 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
     //Set Front Led On
     private void setFrontLedLightOn() {
+        Log.d(TAG, "setFrontLedLightOn()");
+
         //Get System Brightness
         try {
             brightness = android.provider.Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
+
         //Set Max Brightness
         android.provider.Settings.System.putInt(getContentResolver(),
                 android.provider.Settings.System.SCREEN_BRIGHTNESS, 255);
@@ -407,12 +414,13 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
         cbStart.setVisibility(View.GONE);
         cbFon.setVisibility(View.GONE);
         backgroundSettings.setVisibility(View.GONE);
-        btnOnOff.setImageResource(R.drawable.ic_flashlight_on_off_black_90px);
+        btnOnOff.setImageResource(R.drawable.ic_flashlight_on_off_blue_123px);
         backgroundMain.setBackgroundColor(getResources().getColor(R.color.white_background));
     }
 
     //Set Front Led Off
     private void setFrontLedLightOff() {
+        Log.d(TAG, "setFrontLedLightOff()");
 
         android.provider.Settings.System.putInt(getContentResolver(),
                 android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
@@ -431,13 +439,14 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             cbSound.setVisibility(View.GONE);
         }
 
-        btnOnOff.setImageResource(R.drawable.ic_flashlight_off_90px);
+        btnOnOff.setImageResource(R.drawable.ic_flashlight_off_123px);
         backgroundMain.setBackgroundColor(getResources().getColor(R.color.background_main_activity));
     }
 
     //Checks Camera Flash on phone and show the alert message if phone have no camera flash
     private void checkCameraFlash() {
         Log.d(TAG, "checkCameraFlash()");
+
         try {
             boolean isCameraFlash = getApplicationContext().getPackageManager().hasSystemFeature(
                     PackageManager.FEATURE_CAMERA_FLASH);
@@ -456,6 +465,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Create Alert Message
     private void showCameraAlert() {
         Log.d(TAG, "showCameraAlert()");
+
         new AlertDialog.Builder(this)
                 .setTitle(R.string.error_title)
                 .setMessage(R.string.error_text)
@@ -470,6 +480,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Open Camera
     private boolean cameraOpen() {
         Log.d(TAG, "cameraOpen()");
+
         boolean camOpened = false;
         try {
             releaseCameraAndPreview();
@@ -507,6 +518,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Save Check Box State
     public void saveCheckBoxState() {
         Log.d(TAG, "saveCheckBoxState()");
+
         try {
             sharedPref = getPreferences(MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -526,6 +538,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Load Check Box State
     public void loadCheckBoxState() {
         Log.d(TAG, "loadCheckBoxState()");
+
         try {
             sharedPref = getPreferences(MODE_PRIVATE);
 
@@ -537,8 +550,6 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
             boolean savedStateSound = sharedPref.getBoolean(CHECK_BOX_STATE_SOUND, false);
             cbSound.setChecked(savedStateSound);
-
-            Log.d(TAG, "loadCheckBoxState() - data is load");
         } catch (Exception e) {
             Log.d(TAG, "Exception in loadCheckBoxState() - data is NOT load");
             e.printStackTrace();
@@ -547,8 +558,9 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
 
     //Turn ON Camera flash on the phone (without sound)
     private void setFlashLightOn() {
-        Log.d(TAG, "setFlashLightOnWithoutSound()");
-        btnOnOff.setImageResource(R.drawable.ic_flashlight_on_90px);
+        Log.d(TAG, "setFlashLightOn()");
+
+        btnOnOff.setImageResource(R.drawable.ic_flashlight_on_123px);
         try {
             new Thread(new Runnable() {
                 @Override
@@ -585,7 +597,8 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
     //Turn OFF Camera flash on the phone
     private void setFlashLightOff() {
         Log.d(TAG, "setFlashLightOff()");
-        btnOnOff.setImageResource(R.drawable.ic_flashlight_off_90px);
+
+        btnOnOff.setImageResource(R.drawable.ic_flashlight_off_123px);
         try {
             new Thread(new Runnable() {
                 @Override
@@ -631,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             case R.id.check_box_fon:
                 if (cbFon.isChecked()) {
                     cbFon.setTextColor(getResources().getColor(R.color.textOn));
-                    Toast.makeText(this, "Фонарик будет работать при выключении экрана или открытии другого приложения", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Фонарик будет работать при выключении экрана или открытии другого приложения", Toast.LENGTH_SHORT).show();
                 } else {
                     cbFon.setTextColor(getResources().getColor(R.color.textOff));
                 }
@@ -641,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             case R.id.check_box_sound:
                 if (cbSound.isChecked()) {
                     cbSound.setTextColor(getResources().getColor(R.color.textOn));
-                    Toast.makeText(this, "Звук кнопок выключен", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Звук кнопок выключен", Toast.LENGTH_SHORT).show();
                 } else {
                     cbSound.setTextColor(getResources().getColor(R.color.textOff));
                 }
@@ -651,7 +664,7 @@ public class MainActivity extends AppCompatActivity implements SoundPool.OnLoadC
             case R.id.check_box_start:
                 if (cbStart.isChecked()) {
                     cbStart.setTextColor(getResources().getColor(R.color.textOn));
-                    Toast.makeText(this, "Фонарик будет включаться автоматически при старте приложения", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Фонарик будет включаться автоматически при старте приложения", Toast.LENGTH_SHORT).show();
                 } else {
                     cbStart.setTextColor(getResources().getColor(R.color.textOff));
                 }
